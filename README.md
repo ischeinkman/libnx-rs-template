@@ -1,0 +1,1 @@
+# libnx-rs-template
