@@ -1,0 +1,9 @@
+#!/bin/bash
+
+export PATH=$DEVKITPATH/devkitA64/bin:$PATH
+TARGET_TRIPLE=aarch64-none-elf
+
+CARGO_INCREMENTAL=0 RUST_TARGET_PATH="$PWD" xargo build --release --target=$TARGET_TRIPLE
+
+echo "$@"
+make "$@"

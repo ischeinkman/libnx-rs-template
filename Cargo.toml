@@ -1,0 +1,25 @@
+[package]
+name = "Libnx RS Template"
+version = "0.0.5"
+authors = ["scheinkman.ilan@gmail.com"]
+
+[lib]
+crate-type = ["staticlib"]
+
+[profile.dev]
+panic = "abort"
+lto = true
+debug = true
+
+[profile.test]
+lto = true
+debug = true
+
+[profile.release]
+panic = "abort"
+lto = true
+debug = true
+
+[dependencies]
+rlibc = "*"
+libnx-rs = {git = "https://github.com/ischeinkman/libnx-rs"}
