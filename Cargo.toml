@@ -1,5 +1,5 @@
 [package]
-name = "Libnx RS Template"
+name = "libnx-rs-template"
 version = "0.0.5"
 authors = ["scheinkman.ilan@gmail.com"]
 
@@ -19,7 +19,3 @@ debug = true
 panic = "abort"
 lto = true
 debug = true
-
-[dependencies]
-rlibc = "*"
-libnx-rs = {git = "https://github.com/ischeinkman/libnx-rs"}
