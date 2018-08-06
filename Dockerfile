@@ -1,4 +1,5 @@
 FROM devkitpro/devkita64
+ENV PATH=$DEVKITPRO/devkitA64/bin:$PATH
 
 #Install GCC for the CC link
 RUN sudo apt-get update
