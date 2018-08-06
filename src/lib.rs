@@ -1,30 +1,39 @@
-#![feature(start, lang_items, const_fn, panic_implementation)]
-#![no_std]
+#![feature(lang_items, start, const_fn, rustc_private)]
 #![allow(non_camel_case_types)]
 #![allow(non_upper_case_globals)]
 #![allow(non_snake_case)]
 #![allow(dead_code)]
 #![crate_type = "staticlib"]
+#![no_main]
 
 extern crate libnx_rs;
 pub use libnx_rs::libnx::*;
+pub use libnx_rs::libc::*;
+
 #[no_mangle]
-#[start]
-pub unsafe extern fn main(_argc : isize, _argv : * const * const u8) ->isize {
-    printf("\x1b[16;16HPress PLUS to exit.".as_ptr() as *const i8);
+pub extern fn main(_argc : isize, _argv : * const * const u8) ->isize { unsafe {
 
     gfxInitDefault();
     consoleInit(_NULL as *mut PrintConsole);
+
+    printf("Press PLUS to exit.".as_ptr() as *const u8);
+    let mut vec = Vec::new();
+    let mut prevKDown = 0;
     while appletMainLoop() {
         hidScanInput();
 
-        let kDown = HidControllerKeys(hidKeysDown(HidControllerID::CONTROLLER_P1_AUTO) as u32);
+        let kNum = hidKeysDown(HidControllerID::CONTROLLER_P1_AUTO) as u32;
+        let kDown = HidControllerKeys(kNum);
+        if kNum!= prevKDown {
+            vec.push(kNum);
 
-        if kDown == HidControllerKeys::KEY_PLUS {
-            break;
+            if kDown == HidControllerKeys::KEY_PLUS {
+                break;
+            }
+
+            printf("Rec number %d => %d\n".as_ptr() as *const u8, vec.len(), kNum);
+            prevKDown = kNum;
         }
-
-        printf("This key is pressed: %d\n".as_ptr() as *const i8, kDown);
 
         gfxFlushBuffers();
         gfxSwapBuffers();
@@ -32,9 +41,4 @@ pub unsafe extern fn main(_argc : isize, _argv : * const * const u8) ->isize {
     }
 	gfxExit();
     0
-}
-
-#[lang = "eh_personality"] pub extern fn eh_personality() {}
-
-use core::panic::PanicInfo;
-#[panic_implementation] #[no_mangle] pub fn panic(_info : &PanicInfo) -> ! { loop{} }
+}}
