@@ -1,0 +1,8 @@
+
+rm *.nro
+rm *.elf
+
+cargo clean 
+xargo clean 
+
+rm -r /root/.xargo/lib/rustlib/*
