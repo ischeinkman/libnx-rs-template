@@ -19,3 +19,7 @@ debug = true
 panic = "abort"
 lto = true
 debug = true
+
+
+[dependencies.libnx-rs]
+git = "https://github.com/ischeinkman/libnx-rs"

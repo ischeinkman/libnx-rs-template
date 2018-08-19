@@ -1,10 +1,5 @@
-#![feature(lang_items, start, const_fn, rustc_private)]
-#![allow(non_camel_case_types)]
-#![allow(non_upper_case_globals)]
-#![allow(non_snake_case)]
 #![allow(dead_code)]
 #![crate_type = "staticlib"]
-#![no_main]
 
 extern crate libnx_rs;
 pub use libnx_rs::libnx::*;
