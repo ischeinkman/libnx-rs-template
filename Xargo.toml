@@ -14,5 +14,7 @@ stage = 3
 default-features=false 
 
 [dependencies.std]
-path = "../ctr-std-horizon/src/libstd"
+git = "https://github.com/ischeinkman/libnx-rs-std"
+branch = "switch" 
+features = ["panic-unwind"]
 stage = 4
