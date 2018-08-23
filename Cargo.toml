@@ -23,3 +23,32 @@ debug = true
 
 [dependencies.libnx-rs]
 git = "https://github.com/ischeinkman/libnx-rs"
+
+[dependencies.piston2d-framebuffer_graphics]
+#git = "https://github.com/ischeinkman/framebuffer_graphics"
+path = "../framebuffer_graphics"
+
+[dependencies.pistoncore-libnx-rs_window]
+git = "https://github.com/ischeinkman/libnx-rs_window"
+
+[dependencies.conrod]
+version = "0.61"
+features = ["piston"]
+
+[dependencies.rand]
+version = "0.5"
+
+[dependencies.piston]
+version = "0.37"
+
+[dependencies.piston2d-graphics]
+version = "0.26"
+
+[dependencies.image]
+version = "0.19"
+
+[dependencies.rusttype]
+version = "0.5"
+
+[replace]
+"num_cpus:1.8.0" = { git = 'https://github.com/kloumpt/num_cpus/', branch = 'nintendo-3ds-horizon' }
