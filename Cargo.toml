@@ -3,20 +3,23 @@ name = "libnx-rs-template"
 version = "0.0.5"
 authors = ["scheinkman.ilan@gmail.com"]
 
-[lib]
-crate-type = ["staticlib"]
+[[bin]]
+name = "libnxbin"
+path = "src/lib.rs"
+#crate-type = ["staticlib"]
 
 [profile.dev]
-panic = "abort"
+panic = "unwind"
 lto = true
 debug = true
 
 [profile.test]
+panic = "unwind"
 lto = true
 debug = true
 
 [profile.release]
-panic = "abort"
+panic = "unwind"
 lto = true
 debug = true
 
@@ -25,11 +28,14 @@ debug = true
 git = "https://github.com/ischeinkman/libnx-rs"
 
 [dependencies.piston2d-framebuffer_graphics]
-#git = "https://github.com/ischeinkman/framebuffer_graphics"
-path = "../framebuffer_graphics"
+git = "https://github.com/ischeinkman/framebuffer_graphics"
+branch = "textures"
 
 [dependencies.pistoncore-libnx-rs_window]
 git = "https://github.com/ischeinkman/libnx-rs_window"
+
+[dependencies.libc]
+version = "0.2"
 
 [dependencies.conrod]
 version = "0.61"

@@ -1,5 +1,4 @@
 #![allow(dead_code)]
-#![crate_type = "staticlib"]
 
 extern crate libnx_rs_window;
 use libnx_rs_window::{LibnxButtonId, NxFullWindow};
@@ -21,8 +20,9 @@ extern crate graphics;
 use graphics::{Graphics};
 
 extern crate libnx_rs;
-pub use libnx_rs::libc::*;
 pub use libnx_rs::libnx::*;
+
+extern crate libc;
 
 extern crate rusttype;
 use rusttype::Font;
@@ -31,14 +31,60 @@ extern crate image;
 use image::ImageResult;
 
 use std::collections::HashMap;
+use std::fs;
+use std::fs::File;
+use std::os::unix::io::AsRawFd;
+use std::path::Path;
+use std::result::Result;
+use std::error::Error;
+use std::io::Write;
+use std::panic;
 
-#[no_mangle]
-pub extern "C" fn main(_argc: isize, _argv: *const *const u8) -> isize {
+
+pub fn main() {
+    let mut stdout = if let Ok(fl) = redirect_stdout("stdout.txt") { fl } else { return };
+    let mut stderr = if let Ok(fl) = redirect_stderr("stderr.txt") { fl } else { return };
+    println!("Writing line to stdout!");
+    eprintln!("Writing line to stderr!");
     runner();
-    0
+}
+
+pub fn redirect_stdout (filename : &str) -> Result<File, String> {
+    let mut outfile = File::open(Path::new(filename)).map_err(|e| e.description().to_owned())?;
+    outfile.write_fmt(format_args!("Redirecting standard output to {}.", filename));
+    outfile.sync_all();
+    outfile.flush();
+    let raw_fd = outfile.as_raw_fd();
+    let new_fd = unsafe {
+        libc::dup2(libc::STDOUT_FILENO, raw_fd)
+    };
+    if new_fd != raw_fd {
+        Err("Could not open file!".to_owned())
+    }
+    else { 
+        Ok(outfile) 
+    }
+}
+
+pub fn redirect_stderr (filename : &str) -> Result<File, String> {
+    let mut outfile = File::open(Path::new(filename)).map_err(|e| e.description().to_owned())?;
+    outfile.write_fmt(format_args!("Redirecting standard err to {}.", filename));
+    outfile.sync_all();
+    outfile.flush();
+    let raw_fd = outfile.as_raw_fd();
+    let new_fd = unsafe {
+        libc::dup2(libc::STDERR_FILENO, raw_fd)
+    };
+    if new_fd != raw_fd {
+        Err("Could not open file!".to_owned())
+    }
+    else { 
+        Ok(outfile) 
+    }
 }
 
 pub fn runner() {
+
     const WIDTH: u32 = support::WIN_W;
     const HEIGHT: u32 = support::WIN_H;
 
