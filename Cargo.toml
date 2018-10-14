@@ -3,49 +3,53 @@ name = "libnx-rs-template"
 version = "0.0.5"
 authors = ["scheinkman.ilan@gmail.com"]
 
-[[bin]]
+#[[bin]]
+#name = "libnxbin"
+#path = "src/lib.rs"
+#debug = true
+#lto = false
+#opt-level = 0
+
+[lib]
 name = "libnxbin"
 path = "src/lib.rs"
-#crate-type = ["staticlib"]
+debug = true
+lto = false
+opt-level = 0
+crate-type = ["staticlib"]
 
 [profile.dev]
 panic = "unwind"
-lto = true
+lto = false
 debug = true
+opt-level = 0
 
 [profile.test]
 panic = "unwind"
-lto = true
+lto = false
 debug = true
+opt-level = 0
 
 [profile.release]
 panic = "unwind"
-lto = true
+lto = false
 debug = true
-
+opt-level = 0
 
 [dependencies.libnx-rs]
 git = "https://github.com/ischeinkman/libnx-rs"
 
-[dependencies.piston2d-framebuffer_graphics]
-git = "https://github.com/ischeinkman/framebuffer_graphics"
-branch = "textures"
-
-[dependencies.pistoncore-libnx-rs_window]
-git = "https://github.com/ischeinkman/libnx-rs_window"
-
 [dependencies.libc]
 version = "0.2"
-
-[dependencies.conrod]
-version = "0.61"
-features = ["piston"]
 
 [dependencies.rand]
 version = "0.5"
 
 [dependencies.piston]
 version = "0.37"
+
+[dependencies.pistoncore-input]
+version = "0.21.0"
 
 [dependencies.piston2d-graphics]
 version = "0.26"
@@ -56,5 +60,21 @@ version = "0.19"
 [dependencies.rusttype]
 version = "0.5"
 
+[dependencies.pistoncore-libnx-rs_window]
+git = "https://github.com/ischeinkman/libnx-rs_window"
+
+[dependencies.piston_window]
+git = "https://github.com/ischeinkman/piston_window"
+default-features = false
+
+
+[dependencies.conrod]
+features = ["piston"] 
+version = "0.61.1"
+
 [replace]
 "num_cpus:1.8.0" = { git = 'https://github.com/kloumpt/num_cpus/', branch = 'nintendo-3ds-horizon' }
+
+[features]
+default-features = ["conrod-test"]
+conrod-test = []

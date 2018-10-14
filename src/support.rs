@@ -11,10 +11,16 @@
 //! and drawing backends behave in the same manner.
 #![allow(dead_code)]
 
+#![cfg(feature="conrod-test")]
+
 extern crate rand;
 
-use conrod;
 use std;
+use conrod::text::*;
+use conrod::position::{Align, Direction, Padding, Position, Relative};
+use conrod::{widget, Colorable, Labelable, Positionable, Sizeable, Widget};
+use std::iter::once;
+
 
 pub const WIN_W: u32 = 1280;
 pub const WIN_H: u32 = 720;
@@ -41,7 +47,6 @@ impl DemoApp {
 
 /// A set of reasonable stylistic defaults that works for the `gui` below.
 pub fn theme() -> conrod::Theme {
-    use conrod::position::{Align, Direction, Padding, Position, Relative};
     conrod::Theme {
         name: "Demo Theme".to_string(),
         padding: Padding::none(),
@@ -112,18 +117,19 @@ widget_ids! {
 
 /// Instantiate a GUI demonstrating every widget available in conrod.
 pub fn gui(ui: &mut conrod::UiCell, ids: &Ids, app: &mut DemoApp) {
-    use conrod::{widget, Colorable, Labelable, Positionable, Sizeable, Widget};
-    use std::iter::once;
 
     const MARGIN: conrod::Scalar = 30.0;
     const SHAPE_GAP: conrod::Scalar = 50.0;
     const TITLE_SIZE: conrod::FontSize = 42;
     const SUBTITLE_SIZE: conrod::FontSize = 32;
+    
+    println!("Entering support::gui.");
 
     // `Canvas` is a widget that provides some basic functionality for laying out children widgets.
     // By default, its size is the size of the window. We'll use this as a background for the
     // following widgets, as well as a scrollable container for the children widgets.
     const TITLE: &'static str = "All Widgets";
+    println!("Creating canvas.");
     widget::Canvas::new()
         .pad(MARGIN)
         .scroll_kids_vertically()
@@ -135,6 +141,7 @@ pub fn gui(ui: &mut conrod::UiCell, ids: &Ids, app: &mut DemoApp) {
 
     // We'll demonstrate the `Text` primitive widget by using it to draw a title and an
     // introduction to the example.
+    println!("Creating title text.");
     widget::Text::new(TITLE)
         .font_size(TITLE_SIZE)
         .mid_top_of(ids.canvas)
@@ -147,6 +154,7 @@ pub fn gui(ui: &mut conrod::UiCell, ids: &Ids, app: &mut DemoApp) {
          all other widget types. These types are \"special\" in the sense that conrod knows \
          how to render them via `conrod::render::Primitive`s.\
          \n\nScroll down to see more widgets!";
+    println!("Creating intro paragraph text.");
     widget::Text::new(INTRODUCTION)
         .padded_w_of(ids.canvas, MARGIN)
         .down(60.0)
@@ -159,6 +167,7 @@ pub fn gui(ui: &mut conrod::UiCell, ids: &Ids, app: &mut DemoApp) {
     ///// Lines and Shapes /////
     ////////////////////////////
 
+    println!("Creating L & S text.");
     widget::Text::new("Lines and Shapes")
         .down(70.0)
         .align_middle_x_of(ids.canvas)
@@ -169,6 +178,7 @@ pub fn gui(ui: &mut conrod::UiCell, ids: &Ids, app: &mut DemoApp) {
     //
     // TODO: Have conrod provide an auto-flowing, fluid-list widget that is more adaptive for these
     // sorts of situations.
+    println!("Creating shapes layout columns.");
     widget::Canvas::new()
         .down(0.0)
         .align_middle_x_of(ids.canvas)
@@ -182,6 +192,7 @@ pub fn gui(ui: &mut conrod::UiCell, ids: &Ids, app: &mut DemoApp) {
         ])
         .set(ids.shapes_canvas, ui);
 
+    println!("Creating L & S RoundRect A.");
     let shapes_canvas_rect = ui.rect_of(ids.shapes_canvas).unwrap();
     let w = shapes_canvas_rect.w();
     let h = shapes_canvas_rect.h() * 5.0 / 6.0;
@@ -191,12 +202,14 @@ pub fn gui(ui: &mut conrod::UiCell, ids: &Ids, app: &mut DemoApp) {
         .middle_of(ids.shapes_canvas)
         .set(ids.rounded_rectangle, ui);
 
+    println!("Creating L & S Line A.");
     let start = [-40.0, -40.0];
     let end = [40.0, 40.0];
     widget::Line::centred(start, end)
         .mid_left_of(ids.shapes_left_col)
         .set(ids.line, ui);
 
+    println!("Creating L & S Path A.");
     let left = [-40.0, -40.0];
     let top = [0.0, 40.0];
     let right = [40.0, -40.0];
@@ -205,14 +218,17 @@ pub fn gui(ui: &mut conrod::UiCell, ids: &Ids, app: &mut DemoApp) {
         .right(SHAPE_GAP)
         .set(ids.point_path, ui);
 
+    println!("Creating L & S filled rect A.");
     widget::Rectangle::fill([80.0, 80.0])
         .right(SHAPE_GAP)
         .set(ids.rectangle_fill, ui);
 
+    println!("Creating L & S outline rect A.");
     widget::Rectangle::outline([80.0, 80.0])
         .right(SHAPE_GAP)
         .set(ids.rectangle_outline, ui);
 
+    println!("Creating L & S polygon A.");
     let bl = [-40.0, -40.0];
     let tl = [-20.0, 40.0];
     let tr = [20.0, 40.0];
@@ -222,16 +238,19 @@ pub fn gui(ui: &mut conrod::UiCell, ids: &Ids, app: &mut DemoApp) {
         .mid_left_of(ids.shapes_right_col)
         .set(ids.trapezoid, ui);
 
+    println!("Creating L & S Oval Fill A.");
     widget::Oval::fill([40.0, 80.0])
         .right(SHAPE_GAP + 20.0)
         .align_middle_y()
         .set(ids.oval_fill, ui);
 
+    println!("Creating L & S Oval Outline A.");
     widget::Oval::outline([80.0, 40.0])
         .right(SHAPE_GAP + 20.0)
         .align_middle_y()
         .set(ids.oval_outline, ui);
 
+    println!("Creating L & S Circle Fill A.");
     widget::Circle::fill(40.0)
         .right(SHAPE_GAP)
         .align_middle_y()
@@ -240,7 +259,7 @@ pub fn gui(ui: &mut conrod::UiCell, ids: &Ids, app: &mut DemoApp) {
     /////////////////
     ///// Image /////
     /////////////////
-
+    println!("Creating L & S image.");
     widget::Text::new("Image")
         .down_from(ids.shapes_canvas, MARGIN)
         .align_middle_x_of(ids.canvas)
@@ -248,6 +267,7 @@ pub fn gui(ui: &mut conrod::UiCell, ids: &Ids, app: &mut DemoApp) {
         .set(ids.image_title, ui);
 
     const LOGO_SIDE: conrod::Scalar = 144.0;
+    println!("Creating logo support.");
     widget::Image::new(app.rust_logo)
         .w_h(LOGO_SIDE, LOGO_SIDE)
         .down(60.0)
@@ -257,7 +277,7 @@ pub fn gui(ui: &mut conrod::UiCell, ids: &Ids, app: &mut DemoApp) {
     /////////////////////////////////
     ///// Button, XYPad, Toggle /////
     /////////////////////////////////
-
+    println!("Creating button title.");
     widget::Text::new("Button, XYPad and Toggle")
         .down_from(ids.rust_logo, 60.0)
         .align_middle_x_of(ids.canvas)
@@ -272,6 +292,7 @@ pub fn gui(ui: &mut conrod::UiCell, ids: &Ids, app: &mut DemoApp) {
     let max_y = ball_y_range / 3.0;
     let side = 130.0;
 
+    println!("Creating buttons.");
     for _press in widget::Button::new()
         .label("PRESS ME")
         .mid_left_with_margin_on(ids.canvas, MARGIN)
@@ -284,6 +305,7 @@ pub fn gui(ui: &mut conrod::UiCell, ids: &Ids, app: &mut DemoApp) {
         app.ball_xy = [x, y];
     }
 
+    println!("Creating balls.");
     for (x, y) in widget::XYPad::new(app.ball_xy[0], min_x, max_x, app.ball_xy[1], min_y, max_y)
         .label("BALL XY")
         .wh_of(ids.button)
@@ -295,6 +317,7 @@ pub fn gui(ui: &mut conrod::UiCell, ids: &Ids, app: &mut DemoApp) {
         app.ball_xy = [x, y];
     }
 
+    println!("Creating color label.");
     let is_white = app.ball_color == conrod::color::WHITE;
     let label = if is_white { "WHITE" } else { "BLACK" };
     for is_white in widget::Toggle::new(is_white)
@@ -315,6 +338,7 @@ pub fn gui(ui: &mut conrod::UiCell, ids: &Ids, app: &mut DemoApp) {
         };
     }
 
+    println!("Creating more balls.");
     let ball_x = app.ball_xy[0];
     let ball_y = app.ball_xy[1] - max_y - side * 0.5 - MARGIN;
     widget::Circle::fill(20.0)
@@ -326,6 +350,7 @@ pub fn gui(ui: &mut conrod::UiCell, ids: &Ids, app: &mut DemoApp) {
     ///// NumberDialer, PlotPath /////
     //////////////////////////////////
 
+    println!("Creating N & P title.");
     widget::Text::new("NumberDialer and PlotPath")
         .down_from(ids.xy_pad, max_y - min_y + side * 0.5 + MARGIN)
         .align_middle_x_of(ids.canvas)
@@ -333,6 +358,7 @@ pub fn gui(ui: &mut conrod::UiCell, ids: &Ids, app: &mut DemoApp) {
         .set(ids.dialer_title, ui);
 
     // Use a `NumberDialer` widget to adjust the frequency of the sine wave below.
+    println!("Creating NumberDialer.");
     let min = 0.5;
     let max = 200.0;
     let decimal_precision = 1;
@@ -347,6 +373,7 @@ pub fn gui(ui: &mut conrod::UiCell, ids: &Ids, app: &mut DemoApp) {
     }
 
     // Use the `PlotPath` widget to display a sine wave.
+    println!("Creating PlotPath.");
     let min_x = 0.0;
     let max_x = std::f32::consts::PI * 2.0 * app.sine_frequency;
     let min_y = -1.0;
@@ -363,6 +390,6 @@ pub fn gui(ui: &mut conrod::UiCell, ids: &Ids, app: &mut DemoApp) {
     /////////////////////
 
     widget::Scrollbar::y_axis(ids.canvas)
-        .auto_hide(true)
+        .auto_hide(false)
         .set(ids.canvas_scrollbar, ui);
 }

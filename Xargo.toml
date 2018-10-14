@@ -12,9 +12,14 @@ default-features = false
 [dependencies.libc]
 stage = 3
 default-features=false 
+features = ["align"] 
 
 [dependencies.std]
 git = "https://github.com/ischeinkman/libnx-rs-std"
 branch = "switch" 
-features = ["panic-unwind"]
+default-features = false
+features = [
+    "panic-unwind", 
+    "backtrace",
+]
 stage = 4

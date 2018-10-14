@@ -1,0 +1,27 @@
+[build]
+target = "aarch64-none-elf"
+
+[target.aarch64-none-elf]
+linker = "aarch64-none-elf-gcc"
+rustflags = [
+    "-Cdebuginfo=2",
+    #"-Csave-temps",
+    "-Clink-arg=-specs=/opt/devkitpro/libnx/switch.specs",
+    "-Clink-arg=-march=armv8-a",
+    "-Clink-arg=-mtune=cortex-a57",
+    "-Clink-arg=-mtp=soft",
+    #"-Clink-arg=-DSWITCH",
+#[
+    "-Clink-arg=-nodefaultlibs",
+    "-Clink-arg=-nostdlib",
+    "-Clink-arg=-nostartfiles",
+#]    
+    "-Clink-arg=-ffunction-sections",
+    "-Clink-arg=-fno-exceptions",
+    "-Clink-arg=-fPIC",
+    #"-Clink-arg=-fasynchronous-unwind-tables",
+    "-Clink-arg=-Wl,-z,text",
+    "-Clink-arg=-Wl,-z,muldefs",
+    "-Clink-arg=-O0",
+    "-Copt-level=0"
+]

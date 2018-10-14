@@ -1,41 +1,88 @@
 #!/bin/bash
 
+export TARGET=aarch64-none-elf
+export TARGET_CC="aarch64-none-elf-gcc"
+export TARGET_CXX="aarch64-none-elf-g++"
 export PATH=$DEVKITPATH/devkitA64/bin:$PATH
+export TARGET_CFLAGS="\
+ -fPIC\
+ -g\
+ -march=armv8-a -mtune=cortex-a57 -mtp=soft\
+ -Wall\
+ -specs=/opt/devkitpro/libnx/switch.specs\
+\
+ -L /opt/devkitpro/libnx/lib\
+ -L /opt/devkitpro/devkitA64/lib/gcc/aarch64-none-elf/8.2.0/pic\
+ -L /opt/devkitpro/devkitA64/aarch64-none-elf/lib/pic\
+\
+ -Wl,-z,text\
+ -Wl,--gc-sections\
+ -Wl,--emit-relocs\
+ -Wl,--eh-frame-hdr\
+\
+ -nostartfiles\
+ -nodefaultlibs\
+ -nostdlib\
+\
+ -O0\
+"
+
+export TARGET_CXXFLAGS="$TARGET_CFLAGS -fno-rtti -fno-exceptions -std=gnu++11"
+export TARGET_LDFLAGS="-specs=/opt/devkitpro/libnx/switch.specs"
 TARGET_TRIPLE=aarch64-none-elf
 
-echo "Starting new build."
-
-unset CARGO_INCREMENTAL
-RUST_TARGET_PATH="$PWD" xargo build --bin libnxbin --release --target=$TARGET_TRIPLE --verbose
-
-echo "Compiled rust target."
-
-#echo "Linking rust target"
-#aarch64-none-elf-gcc\
-# -g\
-# -march=armv8-a -mtune=cortex-a57 -mtp=soft\
-# -static -Wall -ffunction-sections\
-# -DSWITCH\
-# -specs=/opt/devkitpro/libnx/switch.specs\
-# -fexceptions -frtti\
-# -fasynchronous-unwind-tables\
-# -L /opt/devkitpro/libnx/lib\
-# -L /opt/devkitpro/devkitA64/lib/gcc/aarch64-none-elf/8.2.0/pic\
-# -L /opt/devkitpro/devkitA64/aarch64-none-elf/lib/pic\
-# -L target/aarch64-horizon-elf/release\
-# -lc -lnx -lgcc -lc -lsysbase\
-# target/aarch64-none-elf/release/liblibnx_rs_template.a\
-# -lm -lc -lgcc -lc -lnx -lc -lsysbase -lc -lgcc -lc\
-# -o test.elf\
-# -Wl,-z,text\
-# -Wl,--gc-sections\
-# -Wl,--emit-relocs\
-# -Wl,--eh-frame-hdr\
-# --verbose\
-# -Wl,--verbose
-
-#echo "Building NRO with: elf2nro test.elf testa.nro"
-#elf2nro test.elf testa.nro
- #-L /opt/devkitpro/devkitA64/lib/gcc/aarch64-none-elf/8.2.0/pic\
- #-L /opt/devkitpro/devkitA64/lib/gcc/aarch64-none-elf/8.2.0/pic\
- #-L /opt/devkitpro/devkitA64/aarch64-none-elf/lib/pic\
+echo "Starting new build."\
+ &&\
+ CARGO_INCREMENTAL=0\
+ RUST_TARGET_PATH="$PWD"\
+ RUST_BACKTRACE=1\
+ xargo build --release --lib --target=$TARGET_TRIPLE --verbose --features="conrod-test"\
+ &&\
+ echo "Compiled rust staticlib. Now compiling ELF."\
+ &&\
+ aarch64-none-elf-gcc\
+ -g\
+ -march=armv8-a -mtune=cortex-a57 -mtp=soft\
+ -Wall\
+ -specs=/opt/devkitpro/libnx/switch.specs\
+\
+ -nodefaultlibs\
+ -nostartfiles\
+ -nostdlib\
+\
+\
+ -L /opt/devkitpro/portlibs/switch/lib\
+ -L /opt/devkitpro/libnx/lib\
+ -L /opt/devkitpro/devkitA64/lib/gcc/aarch64-none-elf/8.2.0/pic\
+ -L /opt/devkitpro/devkitA64/aarch64-none-elf/lib/pic\
+ -L target/aarch64-none-elf/release\
+\
+\
+ -Wl,--start-group\
+ -l:liblibnxbin.nx_staticlib\
+ -lglad\
+ -lEGL\
+ -lglapi\
+ -ldrm_nouveau\
+ -lstdc++\
+ -lgcc\
+ -lc\
+ -lnx\
+ -lsysbase\
+ -lm\
+ -l:crtbegin.o -l:crtend.o -l:crti.o -l:crtn.o\
+ -Wl,--end-group\
+\
+ -o test.elf\
+ --verbose\
+ -pie\
+ -fPIE\
+ -Wl,-z,text\
+ -Wl,-z,muldefs\
+ -Wl,-Map=outmap.map\
+ &&\
+ echo "Compiled rust target. Now creating nro."\
+ &&\
+ elf2nro test.elf libnxbin.nro\
+ &&\
+ echo "Finished making nro."
