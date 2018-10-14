@@ -22,8 +22,7 @@ use std::panic;
 #[macro_use]
 extern crate conrod;
 
-#[no_mangle]
-pub extern "C" fn main() {
+pub fn main() {
     runner();
 }
 

@@ -3,20 +3,12 @@ name = "libnx-rs-template"
 version = "0.0.5"
 authors = ["scheinkman.ilan@gmail.com"]
 
-#[[bin]]
-#name = "libnxbin"
-#path = "src/lib.rs"
-#debug = true
-#lto = false
-#opt-level = 0
-
-[lib]
+[[bin]]
 name = "libnxbin"
 path = "src/lib.rs"
 debug = true
 lto = false
 opt-level = 0
-crate-type = ["staticlib"]
 
 [profile.dev]
 panic = "unwind"
