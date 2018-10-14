@@ -12,9 +12,14 @@ If you would like to use this template without Docker, you must install ```devki
 
 ### Developing
 
-Just like in normal Rust, the main entrypoint is the ```main``` function in ```lib.rs```. Unlike in normal Rust, however, you are not allowed to change the signature of this function. It needs to be setup with the same signature as the main from ```C``` in order to link properly.
+Using ```libnx-rs``` is exactly like using standard Rust; the entire ```libstd``` has been ported. However, there are a couple of extra things to remember
+when you develop with ```libnx-rs```:
 
-External crates can be linked via ```Cargo.toml```, just like normal. However, since we don't have a ```stdlib``` for switch just yet, you can only use other ```#![no_std]``` crates.
+* Since the Switch is a custom target, we have a custom target JSON file to build against and pass in a lot of extra arguments to the linker via a ```.cargo/config``` file, both of which are included in this template.
+
+* Since technically Rust doesn't support the Switch, you need to use Xargo to build a valid sysroot. If you are using this template then all this involves is running the ```makew``` script, but if you are trying to get things set up from scratch it may become a more involved process.
+
+* ```libnx-rs-std``` is not the standard Rust ```libstd```. Things may behave in strange ways that you don't expect.
 
 ### Building
 
