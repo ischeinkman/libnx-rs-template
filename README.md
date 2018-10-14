@@ -2,8 +2,6 @@
 
 Simple template to get started with [lib-nx-rs](https://github.com/ischeinkman/libnx-rs).
 
-Do note that this is made with the idea that it will be obsoleted eventually by [Megaton Hammer](https://github.com/MegatonHammer/megaton-hammer). Unless a pressing reason presents itself, this template and related crates will only be maintained until Megaton Hammer reaches a stable point of usability.
-
 ## Setup
 
 The simplest setup is to install Docker and clone the repository; if Docker is used, then everything is handled for you.
@@ -32,4 +30,4 @@ There are 3 ways to package and build an ```nro``` from your code:
 
 * [Igor1201's rusted-switch](https://github.com/Igor1201/rusted-switch) which provided the foundation for this template.
 
-* [Roblabla and his mighty Megaton Hammer](https://github.com/MegatonHammer/megaton-hammer) for eventually obsoleting this.
+* [Roblabla and his mighty Megaton Hammer](https://github.com/MegatonHammer/megaton-hammer) for allowing me to take over his Discord server.
