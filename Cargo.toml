@@ -56,7 +56,7 @@ version = "0.5"
 git = "https://github.com/ischeinkman/libnx-rs_window"
 
 [dependencies.piston_window]
-git = "https://github.com/ischeinkman/piston_window"
+version = "^0.82.0"
 default-features = false
 
 
