@@ -1,16 +1,16 @@
-
 extern crate piston_window;
 extern crate libnx_rs_window;
 extern crate input as einp;
-use super::support;
 
-use super::libnx_rs_window::NxGlWindow;
-use super::libnx_rs_window::LibnxButtonId;
+mod support;
 
-use super::piston_window::{PistonWindow, UpdateEvent, Window, WindowSettings};
-use super::piston_window::{Flip, G2d, G2dTexture, Texture, TextureSettings};
-use super::piston_window::OpenGL;
-use super::piston_window::texture::UpdateTexture;
+use self::libnx_rs_window::NxGlWindow;
+use self::libnx_rs_window::LibnxButtonId;
+
+use self::piston_window::{PistonWindow, UpdateEvent, Window, WindowSettings};
+use self::piston_window::{Flip, G2d, G2dTexture, Texture, TextureSettings};
+use self::piston_window::OpenGL;
+use self::piston_window::texture::UpdateTexture;
 use super::redirect_stderr;
 use super::redirect_stdout;
 use conrod;
