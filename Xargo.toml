@@ -15,6 +15,6 @@ branch = "switch"
 default-features = false
 features = [
     "panic-unwind", 
-    "backtrace",
+    #"backtrace",
 ]
 stage = 3
