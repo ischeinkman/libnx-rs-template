@@ -5,77 +5,78 @@ authors = ["scheinkman.ilan@gmail.com"]
 
 [[bin]]
 name = "libnxbin"
-path = "src/lib.rs"
+path = "src/main.rs"
 debug = true
-lto = false
+lto = true
 opt-level = 0
 
 [profile.dev]
 panic = "unwind"
-lto = false
+lto = true
 debug = true
 opt-level = 0
 
 [profile.test]
 panic = "unwind"
-lto = false
+lto = true
 debug = true
 opt-level = 0
 
 [profile.release]
 panic = "unwind"
-lto = false
+lto = true
 debug = true
 opt-level = 0
 
 [dependencies.libnx-rs]
-git = "https://github.com/ischeinkman/libnx-rs"
-branch = "master"
-
+#git = "https://github.com/ischeinkman/libnx-rs"
+#branch = "master"
+path = "../libnx-rs"
 [dependencies.libc]
 version = "0.2"
 
 [dependencies.rand]
 version = "0.5"
 
-[dependencies.piston]
-version = "0.37"
-optional=true
+#[dependencies.piston]
+#version = "0.37"
+#optional=true
 
-[dependencies.pistoncore-input]
-version = "0.21.0"
-optional=true
+#[dependencies.pistoncore-input]
+#version = "0.21.0"
+#optional=true
 
-[dependencies.piston2d-graphics]
-version = "0.26"
-optional=true
+#[dependencies.piston2d-graphics]
+#version = "0.26"
+#optional=true
 
-[dependencies.image]
-version = "0.19"
-optional=true
+#[dependencies.image]
+#version = "0.19"
+#optional=true
 
-[dependencies.rusttype]
-version = "0.5"
-optional=true
+#[dependencies.rusttype]
+#version = "0.5"
+#optional=true
 
-[dependencies.pistoncore-libnx-rs_window]
-git = "https://github.com/ischeinkman/libnx-rs_window"
-optional=true
+#[dependencies.pistoncore-libnx-rs_window]
+#git = "https://github.com/ischeinkman/libnx-rs_window"
+#optional=true
 
-[dependencies.piston_window]
-version = "^0.82.0"
-default-features = false
-optional=true
+#[dependencies.piston_window]
+#version = "^0.82.0"
+#default-features = false
+#optional=true
 
 
-[dependencies.conrod]
-features = ["piston"] 
-version = "0.61.1"
-optional=true
+#[dependencies.conrod]
+#features = ["piston"] 
+#version = "0.61.1"
+#optional=true
 
-[replace]
-"num_cpus:1.9.0" = { git = 'https://github.com/ischeinkman/num_cpus/' }
+#[replace]
+#"num_cpus:1.9.0" = { git = 'https://github.com/ischeinkman/num_cpus/' }
 
 [features]
 default = []
-conrod-test = ["conrod", "piston_window", "pistoncore-libnx-rs_window", "image", "rusttype", "piston2d-graphics", "pistoncore-input", "piston"]
+conrod-test = []#["conrod", "piston_window", "pistoncore-libnx-rs_window", "image", "rusttype", "piston2d-graphics", "pistoncore-input", "piston"]
+sysmodule-test = []

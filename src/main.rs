@@ -8,18 +8,25 @@ extern crate libc;
 
 
 use std::result::Result;
-use std::path::Path;
 use std::fs::File;
 use std::fs::OpenOptions;
-use std::error::Error;
 use std::io::Write;
 use std::io;
 use std::os::unix::io::AsRawFd;
 use std::panic;
 use std::ptr;
 
+
+mod sysmodule_example;
+
 pub fn main() {
-    example();
+    if cfg!(feature = "sysmodule-test") {
+        sysmodule_example::example();
+    }
+    else {
+        example();
+
+    }
 }
 
 pub fn redirect_stdout (filename : &str) -> Result<File, io::Error> {
@@ -61,7 +68,7 @@ pub fn redirect_stderr (filename : &str) -> Result<File, io::Error> {
 }
 
 
-#[cfg(not(feature="conrod-test"))]
+//#[cfg(not(any(feature="conrod-test", feature="sysmodule-test")))]
 pub fn example() {
     let mut test_counter : usize = 0;
     let mut test_counters : [usize ; 4096] = [0 ; 4096];
@@ -158,6 +165,7 @@ pub fn example() {
     }
 }
 
+/*
 #[cfg(feature = "conrod-test")]
 #[macro_use]
 extern crate conrod;
@@ -169,3 +177,4 @@ mod conrod_example;
 pub fn example() {
     conrod_example::example();
 }
+*/
