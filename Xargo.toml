@@ -7,7 +7,8 @@ stage = 1
 [dependencies.libc]
 stage = 2
 default-features=false 
-features = ["align"] 
+features = ["align", "rustc-dep-of-std"] 
+path = "../libc"
 
 [dependencies.std]
 git = "https://github.com/ischeinkman/libnx-rs-std"

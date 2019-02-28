@@ -33,7 +33,7 @@ opt-level = 0
 #branch = "master"
 path = "../libnx-rs"
 [dependencies.libc]
-version = "0.2"
+version = "0.2.48"
 
 [dependencies.rand]
 version = "0.5"
@@ -80,3 +80,7 @@ version = "0.5"
 default = []
 conrod-test = []#["conrod", "piston_window", "pistoncore-libnx-rs_window", "image", "rusttype", "piston2d-graphics", "pistoncore-input", "piston"]
 sysmodule-test = []
+sysmodule-verify = []
+
+[replace]
+"libc:0.2.49" = { path = '../libc'}

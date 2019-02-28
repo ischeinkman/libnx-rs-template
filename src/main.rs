@@ -3,7 +3,9 @@
 
 extern crate libnx_rs;
 use libnx_rs::libnx::*;
-
+use libnx_rs::{service, LibnxError};
+use libnx_rs::ipc::{IpcCommandHeader, RawIpcArgs};
+use libnx_rs::console::ConsoleHandle;
 extern crate libc;
 
 
@@ -17,16 +19,59 @@ use std::panic;
 use std::ptr;
 
 
+#[cfg(feature="sysmodule-test")]
 mod sysmodule_example;
 
+#[cfg(feature="sysmodule-test")]
 pub fn main() {
-    if cfg!(feature = "sysmodule-test") {
-        sysmodule_example::example();
-    }
-    else {
-        example();
+    sysmodule_example::example();
+}
 
+
+#[cfg(feature="sysmodule-verify")]
+pub fn main() -> Result<(), LibnxError> {
+    let mut sm_ctx = service::SmContext::initialize()?;
+        
+    let mut logfile = OpenOptions::new()
+        .append(true).create(true).create_new(false)
+        .open("libnx_rs_sysmodule_test_example.txt")
+        .map_err(|e| LibnxError::from_msg(format!("Error opening sysmodule log: {:?}", e)))?;
+    
+    let mut console = ConsoleHandle::init_default();
+    writeln!(logfile, "Verifying sysmodule installation.");
+    println!(         "Verifying sysmodule installation.");
+    
+    let mut added_service = match sm_ctx.get_service("lnxrs") {
+        Ok(a) => a, 
+        Err(e) => {
+            writeln!(logfile, "Could not find handle: {:?}", e);
+            println!(         "Could not find handle: {:?}", e);
+            return Err(e);
+        }
+    };
+    let args = IpcCommandHeader::with_args(RawIpcArgs::new(vec![0xFFFFFFFF, 0xafafbba, 1, u32::max_value()]));
+    unsafe {
+        match added_service.handle().dispatch_command(args) {
+            Ok(_) => {}, 
+            Err(e) => {
+                writeln!(logfile, "Could not dispatch command: {:?}", e);
+                println!(         "Could not dispatch command: {:?}", e);
+                return Err(e);
+            }
+
+        }
     }
+
+    Ok(())
+}
+
+#[cfg(not(any(
+    feature="sysmodule-test", 
+    feature="sysmodule-verify",
+    feature="conrod-test"
+)))]
+pub fn main() {
+    example();
 }
 
 pub fn redirect_stdout (filename : &str) -> Result<File, io::Error> {

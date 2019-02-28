@@ -9,9 +9,8 @@ use std::time::Instant;
 use std::slice;
 
 pub fn runner() -> Result<(), LibnxError> {
-    let mut sm_ctx = service::SmContext::initialize()?;
-    let mut fs_ctx = FsContext::initialize()?;
-    let mut session = sm_ctx.register_service("sysmodule_test", false, 32)?;
+    let mut sm_ctx = unsafe { service::SmContext::get_handle() } ;
+    let mut session = sm_ctx.register_service("lnxrs", false, 32)?;
     let mut service = service::Service::create(session);
     let mut sessions : Vec<IpcSession> = Vec::with_capacity(32);
     sessions.push(service.handle());
@@ -27,16 +26,7 @@ pub fn runner() -> Result<(), LibnxError> {
         }
 
         let payload : IpcCommandMessage<RawIpcArgs> = unsafe { IpcCommandMessage::parse_from_tls() };
-        let mut logfile = OpenOptions::new()
-            .append(true).create(true).create_new(false)
-            .open("libnx_rs_sysmodule_example.txt")
-            .map_err(|e| LibnxError::from_msg(format!("Error opening sysmodule log: {:?}", e)))?;
         
-        writeln!(logfile, "Got message at time {:?}:\n", Instant::now());
-        for (idx, raw_word) in (&payload.payload().raw_words).into_iter().enumerate() {
-            writeln!(logfile, "{:04}  : {:08x}  {}", idx, raw_word, raw_word);
-        }
-        writeln!(logfile, "\n");
         let tls_buff = unsafe { slice::from_raw_parts_mut(get_tls_space() as *mut u32, 16) };
         tls_buff[0] = 4;
         tls_buff[1] = 6;
@@ -70,7 +60,9 @@ pub static mut FAKE_HEAP : [u8 ; 0x40000] = [0 ; 0x40000];
 
 #[no_mangle]
 pub static __nx_applet_type : i32 = -2;
-
+extern "C" {
+    pub static __start__ : u32 ;
+}
 #[no_mangle]
 pub unsafe extern "C" fn __libnx_initheap() {
     extern {
@@ -81,6 +73,25 @@ pub unsafe extern "C" fn __libnx_initheap() {
     fake_heap_end = &mut FAKE_HEAP[0x40000 - 1] as *mut u8;
 }
 
+#[no_mangle]
+pub unsafe extern "C" fn __appInit() {
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn __appExit() {
+}
+
 pub fn example() {
-    runner().unwrap()
+    let mut sm_ctx = if let Ok(s) = service::SmContext::initialize() { s } else { return; };
+    let mut fs_ctx = if let Ok(f) = FsContext::initialize() { f } else { return; };
+    let mount_err = unsafe{ libnx_rs::libnx::fsdevMountSdmc()};
+    if mount_err != 0 {
+        ;
+    }
+    if let Err(e) = runner() {
+        ; 
+    }
+    unsafe {libnx_rs::libnx::fsdevUnmountAll()};
+    fs_ctx.exit();
+    sm_ctx.exit();
 }
