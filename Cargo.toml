@@ -29,9 +29,9 @@ debug = true
 opt-level = 0
 
 [dependencies.libnx-rs]
-#git = "https://github.com/ischeinkman/libnx-rs"
-#branch = "master"
-path = "../libnx-rs"
+git = "https://github.com/ischeinkman/libnx-rs"
+branch = "master"
+
 [dependencies.libc]
 version = "0.2.48"
 
@@ -67,7 +67,6 @@ version = "0.5"
 #default-features = false
 #optional=true
 
-
 #[dependencies.conrod]
 #features = ["piston"] 
 #version = "0.61.1"
@@ -81,6 +80,3 @@ default = []
 conrod-test = []#["conrod", "piston_window", "pistoncore-libnx-rs_window", "image", "rusttype", "piston2d-graphics", "pistoncore-input", "piston"]
 sysmodule-test = []
 sysmodule-verify = []
-
-[replace]
-"libc:0.2.49" = { path = '../libc'}
