@@ -1,3 +1,5 @@
+paths = ["libc"]
+
 [build]
 target = "aarch64-none-elf"
 
